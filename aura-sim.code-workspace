@@ -97,6 +97,7 @@
 			"typeinfo": "cpp",
 			"variant": "cpp",
 			"ios": "cpp"
-		}
+		},
+		"commentTranslate.hover.enabled": true
 	}
 }

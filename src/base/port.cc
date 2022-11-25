@@ -2,13 +2,21 @@
 
 namespace aura
 {
+MasterPort::MasterPort(u32 dataBufferSize)
+{
+    for (int i = 0; i < toSlavePort.BufferSize(); i++) {
+        toSlavePort.GetBuffer()[i].wrdBuffer = new u8[dataBufferSize];
+    }
+}
+
 ToSlaveStruct*
 MasterPort::Output()
 {
     return &(toSlavePort.Curr());
 }
 
-ToMasterStruct* MasterPort::Input()
+ToMasterStruct*
+MasterPort::Input()
 {
     assert(fromSlavePort != nullptr);
     return &(fromSlavePort->Last());
@@ -32,7 +40,8 @@ SlavePort::Output()
     return &(toMasterPort.Curr());
 }
 
-ToSlaveStruct* SlavePort::Input()
+ToSlaveStruct*
+SlavePort::Input()
 {
     assert(fromMasterPort != nullptr);
     return &(fromMasterPort->Last());

@@ -32,6 +32,8 @@ class TimingBuffer
     T& Last() { return buffer[last_one]; }
     T& Access(u64 tick) { return buffer[tick % cycle]; }
     T& operator[](u64 tick) { return Access(tick); }
+    u32 BufferSize() const { return cycle; }
+    T* GetBuffer() { return buffer; }
 };
 
 class MasterPort;

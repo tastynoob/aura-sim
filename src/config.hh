@@ -21,6 +21,9 @@ extern u64 global_tick;
 #define DECODEWIDTH 4
 #define RENAMEWIDTH 4
 
+#define L1ICACHELINESIZE 128
+#define L1DCACHELINESIZE 128
+
 #define IPORTS 1
 #define DPORTS 2
 

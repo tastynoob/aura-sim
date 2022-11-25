@@ -30,6 +30,7 @@ class MasterPort
     SlaveTimingBuffer* fromSlavePort = nullptr;
 
   public:
+    MasterPort(u32 dataBufferSize);
     ToSlaveStruct* Output();
     ToMasterStruct* Input();
     void Advance();

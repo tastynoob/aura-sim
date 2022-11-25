@@ -10,11 +10,13 @@ namespace aura
 {
 class O3CPU : public Device
 {
-  private:
+  public:
     // fetch access ports
     std::vector<MasterPort*> iPort;
     // load-store access ports
-    std::vector<MasterPort*> DPort;
+    std::vector<MasterPort*> dPort;
+
+  private:
     // List of all the instructions in flight.
     std::list<DynInstPtr> flightInstList;
     TimingBuffer<FetchStruct> fetchTimingBuffer;
