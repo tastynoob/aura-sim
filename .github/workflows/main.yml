@@ -1,0 +1,10 @@
+name: echo demo
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: move to root
+        run: echo hello world
