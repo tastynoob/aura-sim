@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: move to root
-        run: echo hello world
+        run: echo ${{secrets.TEST}}
