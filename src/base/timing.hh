@@ -12,6 +12,7 @@ class TimingBuffer
     T buffer[cycle];
     u8 prev_one = 1;
     u8 last_one = cycle - 1;
+    const int bufferSize = cycle;
 
   public:
     TimingBuffer() : last_one(cycle - 1) {}
@@ -46,5 +47,57 @@ class Device
     virtual void AddMasterPort(MasterPort* masterPort);
     virtual void AddSlavePort(SlavePort* slavePort);
 };
+
+
+template<typename T, u32 MaxSize>
+class Fifo
+{
+  private:
+    // past and curr timingbuffer use the same fetchbuffer
+    // being used to save memory and improve executing speed
+    TimingBuffer<u32> size;
+    std::queue<T> buffer;
+
+  public:
+    void Clear()
+    {
+        for (int i = 0; i < size.BufferSize(); i++) {
+            size.GetBuffer()[i] = 0;
+        }
+    }
+    // only for write
+    bool Full()
+    {
+        assert(size.Curr() <= MaxSize);
+        return size.Curr() == MaxSize;
+    }
+    // only for read
+    bool Empty()
+    {
+        assert(size.Prev() <= MaxSize);
+        return size.Prev() == 0;
+    }
+    // only for write
+    bool Push(T inst)
+    {
+        if (Full()) {
+            return false;
+        }
+        buffer.push(inst);
+        ++(size.Curr());
+        return true;
+    }
+    // only for read
+    T Pop()
+    {
+        assert(!Empty());
+        T pop_data = buffer.front();
+        buffer.pop();
+        --(size.Prev());
+        return pop_data;
+    }
+    void Advance() { size.Advance(); }
+};
+
 
 }  // namespace aura

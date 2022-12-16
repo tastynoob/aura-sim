@@ -15,15 +15,20 @@ class Fetch
     TimingBuffer<FetchStruct>* fetchTimingBuffer;
     enum class Status { RST, Request, Fetching, Blocking };
     Status curStatus = Status::RST;
+    // fetchU insert up to FETCHWIDTH instructions into fetchbuffer
+    // so we need push extra instructions into leftOverBuffer
+    // it's max size is L1ICacheLineSize/16 * 2
+    std::queue<DynInstPtr> fetchInst;
     Addr pc;
 
   public:
     Fetch(O3CPU* cpu, TimingBuffer<FetchStruct>* buffer);
-    void Init();
     void Tick();
-    void Dump();
     void Advance();
-private:
-    bool SendFetchReq();
+    void Dump();
+
+
+  private:
+    bool SendFetchReq(Addr pc);
 };
 }  // namespace aura

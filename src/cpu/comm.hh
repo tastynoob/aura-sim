@@ -4,11 +4,12 @@
 
 namespace aura
 {
-struct FetchStruct
+struct FetchQueEntry
 {
-    u8 fetchSize;
-    DynInstPtr insts[FETCHWIDTH];
+    Addr basePC;
+    
 };
+struct FetchStruct;
 struct DecodeStruct
 {
     u8 decodeSize;

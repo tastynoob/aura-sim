@@ -2,30 +2,57 @@
 
 namespace aura
 {
-MasterPort::MasterPort(u32 dataBufferSize)
+MasterPort::MasterPort(u32 portBusWidth) : portBusWidth(portBusWidth)
 {
-    for (int i = 0; i < toSlavePort.BufferSize(); i++) {
-        toSlavePort.GetBuffer()[i].wrdBuffer = new u8[dataBufferSize];
+    for (int i = 0; i < toSlaveData.BufferSize(); i++) {
+        toSlaveData.GetBuffer()[i].wrdBuffer = new u8[portBusWidth];
+    }
+}
+
+void
+MasterPort::Clear()
+{
+    // clear all request functional
+    for (int i = 0; i < toSlaveData.BufferSize(); i++) {
+        toSlaveData.GetBuffer()[i].size = 0;
     }
 }
 
 ToSlaveStruct*
-MasterPort::Output()
+MasterPort::Req(u32 size)
 {
-    return &(toSlavePort.Curr());
+    assert(size <= portBusWidth);
+    toSlaveData.Curr().size = size;
+    return &(toSlaveData.Curr());
+}
+
+std::pair<u8*, u32>
+MasterPort::Input()
+{
+    return std::make_pair(toSlaveData.Last().wrdBuffer,
+                          toSlaveData.Last().Size());
+}
+ToSlaveStruct*
+MasterPort::Rereq(u32 size)
+{
+    Clear();
+    assert(size <= portBusWidth);
+    toSlaveData.Prev().size = size;
+    return &(toSlaveData.Prev());
 }
 
 ToMasterStruct*
-MasterPort::Input()
+MasterPort::Rsp()
 {
-    assert(fromSlavePort != nullptr);
-    return &(fromSlavePort->Last());
+    assert(fromSlaveData != nullptr);
+    return &(fromSlaveData->Last());
 }
+
 
 void
 MasterPort::Advance()
 {
-    toSlavePort.Advance();
+    toSlaveData.Advance();
 }
 
 void
@@ -37,27 +64,27 @@ MasterPort::SetSlavePort(SlavePort* toSlave)
 ToMasterStruct*
 SlavePort::Output()
 {
-    return &(toMasterPort.Curr());
+    return &(toMasterData.Curr());
 }
 
 ToSlaveStruct*
 SlavePort::Input()
 {
-    assert(fromMasterPort != nullptr);
-    return &(fromMasterPort->Last());
+    assert(fromMasterData != nullptr);
+    return &(fromMasterData->Last());
 }
 
 void
 SlavePort::Advance()
 {
-    toMasterPort.Advance();
+    toMasterData.Advance();
 }
 
 void
 SlavePort::SetMasterPort(MasterPort* master)
 {
-    assert(fromMasterPort == nullptr);
-    fromMasterPort = &(master->toSlavePort);
-    master->fromSlavePort = &toMasterPort;
+    assert(fromMasterData == nullptr);
+    fromMasterData = &(master->toSlaveData);
+    master->fromSlaveData = &toMasterData;
 }
 }

@@ -23,24 +23,24 @@ TCM::Tick(u64 tick)
     for (auto it : fromMasterPorts) {
         auto input = it->Input();
         auto output = it->Output();
-        if (input->size > 0) {
-            if (input->address + input->size > tcmSize) {
-                output->except = true;
+        if (input->Size() > 0) {
+            if (input->address + input->Size() > tcmSize) {
+                output->error = true;
                 continue;
             } else {
-                output->except = false;
+                output->error = false;
             }
             // write tcm
             if (input->write) {
                 memcpy(tcmBuffer + input->address, input->wrdBuffer,
-                       input->size);
+                       input->Size());
             } else {  // read tcm
                 memcpy(input->wrdBuffer, tcmBuffer + input->address,
-                       input->size);
+                       input->Size());
             }
             output->success = true;
         } else {
-            output->except = false;
+            output->error = false;
             output->success = false;
         }
     }

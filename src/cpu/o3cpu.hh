@@ -3,33 +3,43 @@
 #include "base/timing.hh"
 #include "base/types.hh"
 #include "cpu/comm.hh"
-#include "cpu/frontend/fetch.hh"
 
 
 namespace aura
 {
+class Fetch;
+class Decode;
 class O3CPU : public Device
 {
-  public:
+    using FetchQue = Fifo<DynInstPtr, FETCHBUFFERSIZE>;
+
     // fetch access ports
-    std::vector<MasterPort*> iPort;
+    std::vector<MasterPort*> iPorts;
     // load-store access ports
-    std::vector<MasterPort*> dPort;
+    std::vector<MasterPort*> dPorts;
+
+  public:
+    TimingBuffer<FetchStruct> fetchTimingBuffer;
+    TimingBuffer<DecodeStruct> decodeTimingBuffer;
 
   private:
     // List of all the instructions in flight.
     std::list<DynInstPtr> flightInstList;
-    TimingBuffer<FetchStruct> fetchTimingBuffer;
-    TimingBuffer<DecodeStruct> decodeTimingBuffer;
     Fetch* fetch;
+    Decode* decode;
+
 
   public:
+    FetchQue* fetchQue;
     O3CPU();
     void Tick(u64 tick);
     void Advance();
+    // insert into flightInstList when fetch insts
+    std::list<DynInstPtr>::iterator AddFlightInst(DynInstPtr new_ins);
+
 
     std::vector<MasterPort*>& GetFetchPorts();
-    std::vector<MasterPort*> GetDataPorts();
+    std::vector<MasterPort*>& GetDataPorts();
     // to memory system
 };
 }  // namespace aura

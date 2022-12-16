@@ -2,6 +2,7 @@
 
 namespace aura
 {
+
 void
 Device::Tick(u64 tick)
 {
