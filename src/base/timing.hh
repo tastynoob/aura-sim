@@ -55,27 +55,27 @@ class Fifo
   private:
     // past and curr timingbuffer use the same fetchbuffer
     // being used to save memory and improve executing speed
-    TimingBuffer<u32> size;
+    u32 size_curr, size_prev;
     std::queue<T> buffer;
 
   public:
+    u32 Size() { return size_prev; }
     void Clear()
     {
-        for (int i = 0; i < size.BufferSize(); i++) {
-            size.GetBuffer()[i] = 0;
-        }
+        size_curr = 0;
+        size_prev = 0;
     }
     // only for write
     bool Full()
     {
-        assert(size.Curr() <= MaxSize);
-        return size.Curr() == MaxSize;
+        assert(size_curr <= MaxSize);
+        return size_curr == MaxSize;
     }
     // only for read
     bool Empty()
     {
-        assert(size.Prev() <= MaxSize);
-        return size.Prev() == 0;
+        assert(size_prev <= MaxSize);
+        return size_prev == 0;
     }
     // only for write
     bool Push(T inst)
@@ -84,7 +84,7 @@ class Fifo
             return false;
         }
         buffer.push(inst);
-        ++(size.Curr());
+        ++(size_curr);
         return true;
     }
     // only for read
@@ -93,10 +93,16 @@ class Fifo
         assert(!Empty());
         T pop_data = buffer.front();
         buffer.pop();
-        --(size.Prev());
+        --(size_prev);
         return pop_data;
     }
-    void Advance() { size.Advance(); }
+    void Advance()
+    {
+        // synchronize info
+        size_curr = buffer.size();
+        size_prev = buffer.size();
+        size.Advance();
+    }
 };
 
 

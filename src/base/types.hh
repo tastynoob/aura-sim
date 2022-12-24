@@ -5,7 +5,6 @@
 
 
 
-
 namespace aura
 {
 
@@ -15,13 +14,13 @@ typedef uint64_t Addr;
 typedef uint64_t RegVal;
 #endif
 
-enum class RegClass { Integer, Floating };
+enum class RegClass { Integer, Floating, PhyInteger, PhyFloating };
 
-class RegId
+struct RegId
 {
-  public:
     RegClass regClass;
     u16 regIndex;
 };
+typedef RegId PhyRegId;
 
 }  // namespace aura

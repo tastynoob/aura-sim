@@ -22,6 +22,8 @@ class O3CPU : public Device
     TimingBuffer<FetchStruct> fetchTimingBuffer;
     TimingBuffer<DecodeStruct> decodeTimingBuffer;
 
+    FetchQue* fetchQue;
+
   private:
     // List of all the instructions in flight.
     std::list<DynInstPtr> flightInstList;
@@ -30,7 +32,7 @@ class O3CPU : public Device
 
 
   public:
-    FetchQue* fetchQue;
+
     O3CPU();
     void Tick(u64 tick);
     void Advance();

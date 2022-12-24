@@ -1,4 +1,4 @@
-#include "cpu/backend/deocede.hh"
+#include "cpu/frontend/deocede.hh"
 #include "cpu/o3cpu.hh"
 
 namespace aura

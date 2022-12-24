@@ -4,6 +4,11 @@ namespace aura
 {
 DynInst::DynInst() {}
 
+u8 DynInst::NumDstRegs() const
+{
+    return 1;
+}
+
 std::pair<DynInstPtr, DynInstPtr>
 DynInst::MakeInst(u32 instbitcode)
 {

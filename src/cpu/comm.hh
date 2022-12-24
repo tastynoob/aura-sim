@@ -17,6 +17,7 @@ struct DecodeStruct
 };
 struct RenameStruct
 {
+    bool blocking;
     u8 renameSize;
     DynInstPtr insts[RENAMEWIDTH];
 };

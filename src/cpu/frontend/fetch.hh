@@ -13,13 +13,27 @@ class Fetch
 {
     O3CPU* cpu;
     TimingBuffer<FetchStruct>* fetchTimingBuffer;
-    enum class Status { RST, Request, Fetching, Blocking };
-    Status curStatus = Status::RST;
-    // fetchU insert up to FETCHWIDTH instructions into fetchbuffer
-    // so we need push extra instructions into leftOverBuffer
-    // it's max size is L1ICacheLineSize/16 * 2
-    std::queue<DynInstPtr> fetchInst;
-    Addr pc;
+
+    struct FStage0
+    {
+        Addr pc;
+    } s0;
+
+    // when fetcher get bytestream
+    struct FStage1
+    {
+        Addr pc;
+        u32 leftover_size;
+        u8 leftover_buffer[L1ICACHELINESIZE];
+    } s1;
+
+    struct FStage2
+    {
+
+    }s2;
+    
+
+    Addr lastpc;
 
   public:
     Fetch(O3CPU* cpu, TimingBuffer<FetchStruct>* buffer);
